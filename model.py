@@ -22,6 +22,7 @@ def generator(samples, batch_size=32):
                 # center, left, right
                 cfile, lfile, rfile = ['./IMG/' + batch_sample[i].split('/')[-1] for i in range(3)]
                 center_image = cv2.imread(cfile)
+                center_image = cv2.cvtColor(center_image, cv2.COLOR_BGR2RGB)
                 center_angle = float(batch_sample[3])
                 images.append(center_image)
                 angles.append(center_angle)
