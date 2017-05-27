@@ -17,7 +17,7 @@ The goals / steps of this project are the following:
 [nvidia-model]: https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2016/08/cnn-architecture.png
 [loss_visual]: ./examples/loss_visual.png
 [data_visual]: ./examples/data_visual.png
-[center]: ./examples/center.png
+[center]: ./examples/center.jpg
 [recover1]: ./examples/recover1.jpg
 [recover2]: ./examples/recover2.jpg
 [recover3]: ./examples/recover3.jpg
@@ -103,7 +103,9 @@ At first use the simulator to generate training data. I first recorded 2 laps on
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to turn when driving off the center. These images show what a recovery looks like:
 
 ![recover 1][recover1]
+
 ![recover 2][recover2]
+
 ![recover 3][recover3]
 
 However, at this phase I realize data collection is very time consuming. First, you need to be really careful when recording. If bad driving is recoarded then to prevent it from being learned, I have to restart recoarding. This is tedious. And second, I have to upload it to AWS to training and it'll cost me hours to upload a few hundreds MB data. So I decided to use Udacity provided dataset.
