@@ -18,9 +18,9 @@ The goals / steps of this project are the following:
 [loss_visual]: ./examples/loss_visual.png
 [data_visual]: ./example/data_visual.png
 [center]: ./example/center.png
-[recovery1]: ./example/recover1.png
-[recovery2]: ./example/recover2.png
-[recovery3]: ./example/recover3.png
+[recover1]: ./example/recover1.png
+[recover2]: ./example/recover2.png
+[recover3]: ./example/recover3.png
 
 [//]: # (Links)
 [nvidia]: https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/
