@@ -11,6 +11,7 @@ from random import shuffle
 use_official_data = True
 
 
+# generator
 def generator(samples, batch_size=32):
     angle_adjust = [0, 0.2, -0.2]
     num_samples = len(samples)
@@ -24,11 +25,14 @@ def generator(samples, batch_size=32):
             for batch_sample in batch_samples:
                 # center, left, right
                 for i in range(3):
+                    # use official data switch
                     if use_official_data:
                         name = './data/IMG/' + batch_sample[i].split('/')[-1]
                     else:
                         name = './IMG/' + batch_sample[i].split('/')[-1]
                     image = cv2.imread(name)
+
+                    # resize image to 1. make it compatible to nvidia's pipeline 2. speed up training
                     image = cv2.resize(image, (0,0), fx=0.625, fy=0.625)
                     image = cv2.cvtColor(image, cv2.COLOR_BGR2YUV)
                     angle = float(batch_sample[3]) + angle_adjust[i]
@@ -53,8 +57,6 @@ samples = []
 with open(drivinglog) as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
-#         if float(line[3]) == 0:
-#             continue
         samples.append(line)
 
 BATCH_SIZE = 128

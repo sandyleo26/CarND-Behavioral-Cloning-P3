@@ -1,4 +1,4 @@
-#**Behavioral Cloning** 
+# **Behavioral Cloning** 
 
 ---
 
@@ -15,6 +15,12 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [nvidia-model]: https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2016/08/cnn-architecture.png
+[loss_visual]: ./examples/loss_visual.png
+[data_visual]: ./example/data_visual.png
+[center]: ./example/center.png
+[recovery1]: ./example/recover1.png
+[recovery2]: ./example/recover2.png
+[recovery3]: ./example/recover3.png
 
 [//]: # (Links)
 [nvidia]: https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/
@@ -48,28 +54,23 @@ The model.py file contains the code for training and saving the convolution neur
 
 #### 1. An appropriate model architecture has been employed
 
-I borrow the [model][nvidia-model-link] used by Nvidia for this project. The architecture is show below.
+I borrow and modified slightly the [model][nvidia-model-link] used by Nvidia for this project. The architecture is show below.
 
 ![network architecture][nvidia-model-img]
 
 The model has 5 convolutional layers, some using sub-sampling with stride of 2 by 2, followed by 3 fully connected layers. The output is a single value which represent turning radius.
 
 #### 2. Attempts to reduce overfitting in the model
-TODO
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
-
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+Overfitting is not an issue during model tuning. Rather underfitting is a main problem. The model was trained and validated on different data sets to ensure that the model was not underfitting. The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
-TODO
 
 The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
 
 #### 4. Appropriate training data
-TODO
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road. But in the end I decided to use Udacity provided data sets (more explanation below).
 
 For details about how I created the training data, see the next section. 
 
@@ -77,27 +78,11 @@ For details about how I created the training data, see the next section.
 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to start simple and progressively use more powerful networks.
+The overall strategy for deriving a model architecture was to start simple and progressively add more layers as well as collecting more data.
 
-Firstly, as David did in video lecture, just flatten the entire image, a fully connected layer and then output a single value. This is just to make sure environment is setup correctly and get some ideas of the potential difficult part. 
+To combat underfitting, I add more convolutional layers; for overfitting, I collect more data.
 
-**The result**: loss is hugh, and car is hardly moving, constantly steering wheels. But at least we make the first step toward the goal.
-
-Secondly, I replaced the model with a LeNet like network and increase training data by driving more laps. Besides, I also normalize the image in preprocessing stage. 
-
-**The result**: both model size and loss decreas due to subsampling in the convolutional stage and car is steering smoothly, although will wander off in the first turn. I notice that there's still room for improving loss but increasing number of epochs can't guarantee that becasue the loss can suddenly increase dramatically, which usually leads to even worse model. This is a sign of underfitting.
-
-Thirdly, main changes in this round:
-* flipping images and using left and right camera views, resulting 6x data
-* use the core nvidia pipeline
-* use Udacity provided data set
-* 
-
-To combat the overfitting, I modified the model so that ...
-
-Then I ... 
-
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
+When a model is changed, and if loss is reduced, I will test it using the simulator and see how well the car was driving around **track one**. Often there were a few spots where the vehicle fell off the track (i.e. left turn near bridge and the first right turn). And if improvement is observed in those spots after model is changed, further fine tuning will be based on new model. To improve the driving behavior in these cases, I use more powerful networks as well as augumenting data by flipping images. Also recording recovery driving is helpful.
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
@@ -121,12 +106,29 @@ I then recorded the vehicle recovering from the left side and right sides of the
 ![recover 2][recover2]
 ![recover 3][recover3]
 
-To augment the data sat, I also flipped images and angles and use left and right camera images with adjusted angle(+/- 0.2)
+However, at this phase I realize data collection is very time consuming. First, you need to be really careful when recording. If bad driving is recoarded then to prevent it from being learned, I have to restart recoarding. This is tedious. And second, I have to upload it to AWS to training and it'll cost me hours to upload a few hundreds MB data. So I decided to use Udacity provided dataset.
 
-However, at this phaze I realize data collection is very time consuming. First, you need to be really careful when recording. If bad driving is recoarded then to prevent it from being learned, I have to restart recoarding. This is tedious. And second, I have to upload it to AWS to training and it'll cost me hours to upload a few hundreds MB data. So I decided to use Udacity provided dataset.
+**Augumenting data**
+More data mean less overfitting. To augment the data sat, I also flipped images and angles and use left and right camera images with adjusted angle(+/- 0.2). The dataset has 24110 images, after augmenting data using flipped, left&right cameras, there're total 144,660 images.
 
-The dataset has TODO...
+**Training**
+I start with simple network (as David suggested in lecture), just flatten the entire image, a fully connected layer and then output a single value. This is just to make sure environment is setup correctly and get some ideas of the potential difficult part. 
 
-To avoid [out of memory error][oom], I use generators to feed in data. The `batch_size` is also chosen to avoid memory issue. 
+Result: loss is hugh, and car is hardly moving, constantly steering wheels. But at least we make the first step toward the goal.
 
- The ideal number of epochs was TODO as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+Then I replaced the model with a LeNet like network and increase training data by driving more laps. Besides, I also normalize the image in preprocessing stage. 
+
+Result: both model size and loss decrease due to subsampling in the convolutional stage and car is steering smoothly, although will wander off in the first turn. I notice that there's still room for improving loss but increasing number of epochs can't guarantee that becasue the loss can suddenly increase dramatically, which usually leads to even worse model. This is a sign of underfitting.
+
+Then I change my model to the nvidia pipeline. One noticable improvement is the model can drive correctly on all left turns but will fail right turn.
+
+Finally, I added 2 additional convolutional layers and now the car can drive safely past all turns. The ideal number of epochs can be estimated by plotting the loss graph below. I used an adam optimizer so that manually training the learning rate wasn't necessary.
+
+ ![loss graph][loss_visual]
+
+ The best loss ususually happen around EPOCH 12 ~ 14.
+
+**Some other implementation issues**
+1. To avoid [out of memory error][oom], I use generators to feed in data. The `batch_size` is also chosen to avoid memory issue. 
+1. `drive.py` is changed because the model expect resized (66x200) image in YUV color space.
+
