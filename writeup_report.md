@@ -16,11 +16,11 @@ The goals / steps of this project are the following:
 
 [nvidia-model]: https://devblogs.nvidia.com/parallelforall/wp-content/uploads/2016/08/cnn-architecture.png
 [loss_visual]: ./examples/loss_visual.png
-[data_visual]: ./example/data_visual.png
-[center]: ./example/center.png
-[recover1]: ./example/recover1.jpg
-[recover2]: ./example/recover2.jpg
-[recover3]: ./example/recover3.jpg
+[data_visual]: ./examples/data_visual.png
+[center]: ./examples/center.png
+[recover1]: ./examples/recover1.jpg
+[recover2]: ./examples/recover2.jpg
+[recover3]: ./examples/recover3.jpg
 
 [//]: # (Links)
 [nvidia]: https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/
