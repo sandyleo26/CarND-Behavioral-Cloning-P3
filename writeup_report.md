@@ -98,7 +98,7 @@ However, I added two more convoluational layers in the begining, 8@66x200 with 7
 
 At first use the simulator to generate training data. I first recorded 2 laps on track one using center lane driving. Here is an example image of center lane driving:
 
-![center lane][center-lane]
+![center lane][center]
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to turn when driving off the center. These images show what a recovery looks like:
 
@@ -110,17 +110,18 @@ I then recorded the vehicle recovering from the left side and right sides of the
 
 However, at this phase I realize data collection is very time consuming. First, you need to be really careful when recording. If bad driving is recoarded then to prevent it from being learned, I have to restart recoarding. This is tedious. And second, I have to upload it to AWS to training and it'll cost me hours to upload a few hundreds MB data. So I decided to use Udacity provided dataset.
 
-**Augumenting data**
+##### Augumenting data
+
 More data mean less overfitting. To augment the data sat, I also flipped images and angles and use left and right camera images with adjusted angle(+/- 0.2). The dataset has 24110 images, after augmenting data using flipped, left&right cameras, there're total 144,660 images.
 
-**Training**
+##### Training
 I start with simple network (as David suggested in lecture), just flatten the entire image, a fully connected layer and then output a single value. This is just to make sure environment is setup correctly and get some ideas of the potential difficult part. 
 
-Result: loss is hugh, and car is hardly moving, constantly steering wheels. But at least we make the first step toward the goal.
+**Result**: loss is hugh, and car is hardly moving, constantly steering wheels. But at least we make the first step toward the goal.
 
 Then I replaced the model with a LeNet like network and increase training data by driving more laps. Besides, I also normalize the image in preprocessing stage. 
 
-Result: both model size and loss decrease due to subsampling in the convolutional stage and car is steering smoothly, although will wander off in the first turn. I notice that there's still room for improving loss but increasing number of epochs can't guarantee that becasue the loss can suddenly increase dramatically, which usually leads to even worse model. This is a sign of underfitting.
+**Result**: both model size and loss decrease due to subsampling in the convolutional stage and car is steering smoothly, although will wander off in the first turn. I notice that there's still room for improving loss but increasing number of epochs can't guarantee that becasue the loss can suddenly increase dramatically, which usually leads to even worse model. This is a sign of underfitting.
 
 Then I change my model to the nvidia pipeline. One noticable improvement is the model can drive correctly on all left turns but will fail right turn.
 
